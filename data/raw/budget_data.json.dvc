@@ -1,0 +1,5 @@
+outs:
+- md5: 62a10a79c4bee080861aee37021c0fae
+  size: 129
+  hash: md5
+  path: budget_data.json
