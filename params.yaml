@@ -1,0 +1,17 @@
+data_cleaning:
+  min_amount: 1.0
+  date_format: "%Y-%m-%d"
+
+feature_engineering:
+  moving_average_window: 3
+  risk_free_rate: 0.02
+
+analysis:
+  forecast_months: 6
+
+budget:
+  allocation_strategy: "equal"  # options: equal, high_risk, low_risk
+
+reporting:
+  include_charts: true
+  currency_symbol: "$"

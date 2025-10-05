@@ -1,0 +1,98 @@
+schema: '2.0'
+stages:
+  data-cleaning:
+    cmd: python scripts/clean_transactions.py
+    deps:
+    - path: data/raw/transactions.csv
+      hash: md5
+      md5: 077f5c134fe551cc20e47601daf6cd0f
+      size: 37086
+    - path: src/data_pipeline.py
+      hash: md5
+      md5: 2fd78b3c005098c31e177dbf91b3e92a
+      size: 3523
+    params:
+      params.yaml:
+        data_cleaning.date_format: '%Y-%m-%d'
+        data_cleaning.min_amount: 1.0
+    outs:
+    - path: data/processed/transactions_clean.csv
+      hash: md5
+      md5: 077f5c134fe551cc20e47601daf6cd0f
+      size: 37086
+    - path: metrics/data_quality.json
+      hash: md5
+      md5: 3550d35a4f41c0dc8df7d16167ca538e
+      size: 76
+  feature-engineering:
+    cmd: python scripts/feature_engineering.py
+    deps:
+    - path: data/processed/transactions_clean.csv
+      hash: md5
+      md5: 077f5c134fe551cc20e47601daf6cd0f
+      size: 37086
+    - path: src/analyzer.py
+      hash: md5
+      md5: a3e8d8beefff9c35583cbab1a43b319a
+      size: 4141
+    params:
+      params.yaml:
+        feature_engineering.moving_average_window: 3
+        feature_engineering.risk_free_rate: 0.02
+    outs:
+    - path: data/features/transactions_features.csv
+      hash: md5
+      md5: 620c6dd66b7a1676ed4fff7c6b946485
+      size: 57078
+  analysis:
+    cmd: python scripts/analyze_data.py
+    deps:
+    - path: data/features/transactions_features.csv
+      hash: md5
+      md5: 620c6dd66b7a1676ed4fff7c6b946485
+      size: 57078
+    - path: data/raw/budget_data.json
+      hash: md5
+      md5: 62a10a79c4bee080861aee37021c0fae
+      size: 129
+    - path: data/raw/market_data.csv
+      hash: md5
+      md5: 683e41ad253cb3aff875a04cedb53515
+      size: 41814
+    - path: src/analyzer.py
+      hash: md5
+      md5: a3e8d8beefff9c35583cbab1a43b319a
+      size: 4141
+    params:
+      params.yaml:
+        analysis.forecast_months: 6
+        budget.allocation_strategy: equal
+    outs:
+    - path: data/analysis/insights.json
+      hash: md5
+      md5: d5c391252ee7c8a7b307e3352ac31f25
+      size: 109
+    - path: metrics/budget_adherence.json
+      hash: md5
+      md5: 5eff3eab39feb52fc1e005d4b202ff33
+      size: 62
+    - path: metrics/portfolio_performance.json
+      hash: md5
+      md5: 4a84ffa76d724ac100b653d8c1e7b7e1
+      size: 98
+  reporting:
+    cmd: python scripts/generate_report.py
+    deps:
+    - path: data/analysis/insights.json
+      hash: md5
+      md5: d5c391252ee7c8a7b307e3352ac31f25
+      size: 109
+    params:
+      params.yaml:
+        reporting.currency_symbol: $
+        reporting.include_charts: true
+    outs:
+    - path: reports/summary_report.pdf
+      hash: md5
+      md5: 8ca9916a5195e349b2c3d47875308219
+      size: 1890
