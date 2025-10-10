@@ -1,0 +1,8 @@
+{
+    "Food": 500,
+    "Transport": 200,
+    "Entertainment": 300,
+    "Bills": 400,
+    "Shopping": 250,
+    "Healthcare": 150
+}

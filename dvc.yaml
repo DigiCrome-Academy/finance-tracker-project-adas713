@@ -1,0 +1,50 @@
+stages:
+  data-cleaning:
+    cmd: python scripts/clean_transactions.py
+    deps:
+      - data/raw/transactions.csv
+      - src/data_pipeline.py
+    params:
+      - data_cleaning.min_amount
+      - data_cleaning.date_format
+    outs:
+      - data/processed/transactions_clean.csv
+    metrics:
+      - metrics/data_quality.json
+
+  feature-engineering:
+    cmd: python scripts/feature_engineering.py
+    deps:
+      - data/processed/transactions_clean.csv
+      - src/analyzer.py
+    params:
+      - feature_engineering.moving_average_window
+      - feature_engineering.risk_free_rate
+    outs:
+      - data/features/transactions_features.csv
+
+  analysis:
+    cmd: PYTHONPATH=. python scripts/analyze_data.py
+    deps:
+      - data/features/transactions_features.csv
+      - data/raw/market_data.csv
+      - data/raw/budget_data.json
+      - src/analyzer.py
+    params:
+      - analysis.forecast_months
+      - budget.allocation_strategy
+    outs:
+      - data/analysis/insights.json
+    metrics:
+      - metrics/portfolio_performance.json
+      - metrics/budget_adherence.json
+
+  reporting:
+    cmd: python scripts/generate_report.py
+    deps:
+      - data/analysis/insights.json
+    params:
+      - reporting.include_charts
+      - reporting.currency_symbol
+    outs:
+      - reports/summary_report.pdf
