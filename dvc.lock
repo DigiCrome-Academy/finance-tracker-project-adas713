@@ -33,8 +33,8 @@ stages:
       size: 37086
     - path: src/analyzer.py
       hash: md5
-      md5: a3e8d8beefff9c35583cbab1a43b319a
-      size: 4141
+      md5: b6583a705eb474ae812b8e20d7de6a84
+      size: 4128
     params:
       params.yaml:
         feature_engineering.moving_average_window: 3
@@ -45,7 +45,7 @@ stages:
       md5: 620c6dd66b7a1676ed4fff7c6b946485
       size: 57078
   analysis:
-    cmd: python scripts/analyze_data.py
+    cmd: PYTHONPATH=. python scripts/analyze_data.py
     deps:
     - path: data/features/transactions_features.csv
       hash: md5
@@ -61,32 +61,32 @@ stages:
       size: 41814
     - path: src/analyzer.py
       hash: md5
-      md5: a3e8d8beefff9c35583cbab1a43b319a
-      size: 4141
+      md5: b6583a705eb474ae812b8e20d7de6a84
+      size: 4128
     params:
       params.yaml:
         analysis.forecast_months: 6
-        budget.allocation_strategy: equal
+        budget.allocation_strategy: low_risk
     outs:
     - path: data/analysis/insights.json
       hash: md5
-      md5: d5c391252ee7c8a7b307e3352ac31f25
-      size: 109
+      md5: 865650b760bf6ea0f211de289b56a0b8
+      size: 336
     - path: metrics/budget_adherence.json
       hash: md5
-      md5: 5eff3eab39feb52fc1e005d4b202ff33
-      size: 62
+      md5: dadad3502cc68918b682766fbd97f8b3
+      size: 252
     - path: metrics/portfolio_performance.json
       hash: md5
-      md5: 4a84ffa76d724ac100b653d8c1e7b7e1
-      size: 98
+      md5: 6ec89585e0c4b63f3fd39f59b924768f
+      size: 137
   reporting:
     cmd: python scripts/generate_report.py
     deps:
     - path: data/analysis/insights.json
       hash: md5
-      md5: d5c391252ee7c8a7b307e3352ac31f25
-      size: 109
+      md5: 865650b760bf6ea0f211de289b56a0b8
+      size: 336
     params:
       params.yaml:
         reporting.currency_symbol: $
@@ -94,5 +94,5 @@ stages:
     outs:
     - path: reports/summary_report.pdf
       hash: md5
-      md5: 8ca9916a5195e349b2c3d47875308219
-      size: 1890
+      md5: a0c863a2aebd4e6c06cac193b8072659
+      size: 2775

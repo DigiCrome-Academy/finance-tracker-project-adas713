@@ -1,5 +1,3 @@
-# src/analyzer.py
-
 import numpy as np
 
 class FinancialAnalyzer:
@@ -8,9 +6,6 @@ class FinancialAnalyzer:
         self.incomes = np.array(incomes, dtype=float)
         self.dates = np.array(dates) if dates is not None else None
 
-    # ------------------------
-    # Step 3.1 Methods
-    # ------------------------
     def calculate_moving_averages(self, window_size: int = 3):
         if window_size > len(self.expenses):
             raise ValueError("Window size cannot be greater than number of data points.")
@@ -28,11 +23,17 @@ class FinancialAnalyzer:
         }
 
     def project_future_balance(self, months_ahead: int = 6):
-        balances = self.incomes - self.expenses
-        x = np.arange(len(balances))
-        slope, intercept = np.polyfit(x, balances, 1)
-        future_x = np.arange(len(balances), len(balances) + months_ahead)
-        return intercept + slope * future_x
+        if self.incomes is not None:
+            balances = self.incomes - self.expenses
+        else:
+            balances = -self.expenses  
+
+        cumulative = np.cumsum(balances)
+        x = np.arange(len(cumulative))
+        slope, intercept = np.polyfit(x, cumulative, 1)
+        projected_balance = intercept + slope * (len(cumulative) + months_ahead - 1)
+        return projected_balance
+
 
     def calculate_portfolio_metrics(self, returns: np.ndarray, risk_free_rate: float = 0.02):
         avg_return = np.mean(returns)
@@ -51,9 +52,7 @@ class FinancialAnalyzer:
         optimized_budget = allocation_ratios * np.sum(budgets)
         return dict(zip(categories, optimized_budget))
 
-    # ------------------------
-    # Step 3.2 Methods
-    # ------------------------
+
     def correlation_between_categories(self, category_expenses: np.ndarray):
         """
         Calculate correlation matrix between different spending categories.
@@ -87,8 +86,8 @@ class FinancialAnalyzer:
         """
         if self.dates is None:
             raise ValueError("Dates are required for time-series analysis.")
-        x = np.arange(len(self.expenses))
-        slope, intercept = np.polyfit(x, self.expenses, 1)
+        days = np.array([(d - self.dates[0]).days for d in self.dates])
+        slope, intercept = np.polyfit(days, self.expenses, 1)
         return slope, intercept
 
     def recommend_budget_changes(self, category_expenses: np.ndarray, category_names: list, budget_limits: np.ndarray):

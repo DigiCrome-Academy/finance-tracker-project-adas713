@@ -11,8 +11,12 @@ class InvestmentPortfolio:
             self.purchase_price = purchase_price
             self.current_price = current_price
             self.purchase_date = purchase_date
+        
         def get_symbol(self):
             return self.symbol
+        
+        def market_value(self):
+            return self.shares * self.current_price
 
     def add_holding(self, holding):
         self.holdings[holding.get_symbol()] = holding

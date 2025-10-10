@@ -1,5 +1,3 @@
-# src/utils.py
-
 import time
 import functools
 import logging
@@ -95,7 +93,7 @@ filter_by_threshold = lambda numbers, t: list(filter(lambda x: x >= t, numbers))
 # 6. Recursive functions for nested data
 # -------------------------------------
 
-def sum_nested_numbers(data):
+def sum_nested_numbers(data: object) -> float:
     """
     Recursively sum all numeric values in a nested data structure
     (lists, tuples, dicts, sets).
