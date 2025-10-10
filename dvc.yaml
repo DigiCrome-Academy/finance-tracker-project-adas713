@@ -24,7 +24,7 @@ stages:
       - data/features/transactions_features.csv
 
   analysis:
-    cmd: python scripts/analyze_data.py
+    cmd: PYTHONPATH=. python scripts/analyze_data.py
     deps:
       - data/features/transactions_features.csv
       - data/raw/market_data.csv
